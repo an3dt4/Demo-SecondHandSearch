@@ -1,0 +1,29 @@
+//
+//  SecondHand.pch
+//  Demo-SecondHandSearch
+//
+//  Created by Suning on 16/6/15.
+//  Copyright © 2016年 jf. All rights reserved.
+//
+
+#ifndef SecondHand_pch
+#define SecondHand_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#ifdef __OBJC__
+
+#define kScreenWidth    [UIScreen mainScreen].bounds.size.width
+#define kScreenHeight   [UIScreen mainScreen].bounds.size.height
+
+#define IS_IOS9     [UIDevice currentDevice].systemVersion.floatValue > 8.5
+
+#import "UIView+Frame.h"
+#import "UIColor+SNFoundation.h"
+
+#endif
+
+
+
+#endif /* SecondHand_pch */
