@@ -16,5 +16,62 @@
 <br/>
 对于该条需求，只需在FMDB搜索时，按照主键rowid倒序展示即可
 <br/>
-  待续……
+  <pre lang="OC"><code>
+  -(NSMutableArray *)findAllSearch{
+    NSMutableArray *arr = [NSMutableArray array];
+    FMDatabase *db = [FMDatabase databaseWithPath:self.dbPath];
+    if ([db open]) {
+        NSString *sql = [NSString stringWithFormat:@"SELECT * FROM %@ order by rowid desc",TableName];
+        FMResultSet *rs = [db executeQuery:sql];
+        while ([rs next]) {
+            NSString *keyWord = [rs stringForColumn:@"keyWord"];
+            [arr addObject:keyWord];
+        }
+        [db close];
+    }
+    return arr;
+}
+  </code></pre>
 <br/>
+<br/>
+**②搜索结果不能重复**
+<pre lang="OC"><code>
+/** 去除数据库已有的相同搜索结果，先删除旧的，再插入新的，这样不影响结果显示 */
+-(void)removeSameData:(NSString *)searchStr{
+    NSArray *tempArr = [[SHSearchDBManager shareSearchDBManage] findAllSearch];
+    if ([tempArr containsObject:searchStr]) {
+        [[SHSearchDBManager shareSearchDBManage] deleteSearchStrByKeyword:searchStr];
+    }
+    [[SHSearchDBManager shareSearchDBManage] insterSearchArr:searchStr];
+}
+</code></pre>
+<br/>
+<br/>
+**③最多存储10条**
+<pre lang="OC"><code>
+#define MaxCount    10 //最多历史结果条数
+
+/** 保持数据库只存10条数据，若有新的，则删除最旧的 */
+-(void)moreThanMaxNumSearchStr:(NSString *)searchStr{
+    NSArray *tempArr = [[SHSearchDBManager shareSearchDBManage] findAllSearch];
+    if (tempArr.count > MaxCount) {
+        [[SHSearchDBManager shareSearchDBManage] deleteTheOldestSearchStr];
+    }
+}
+</code></pre>
+<br/>
+<br/>
+然后在往数据库添加新数据时，去重和限制条数是有顺序的
+<br/>
+<pre lang="OC"><code>
+-(void)insertDataBase:(NSString *)searchStr{
+    if (searchStr.length==0) {
+        return;
+    } else {
+        //先去重再添加新的
+        [self removeSameData:searchStr];
+        [self moreThanMaxNumSearchStr:searchStr];
+        [_historyTableView reloadData];
+    }
+}
+</code></pre>
