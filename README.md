@@ -4,3 +4,17 @@
 <br/>效果如下：
 <br/>
 ![image](https://github.com/Apologize327/Demo-SecondHandSearch/blob/master/demo-searchResult.gif)
+<br/>
+在模仿闲鱼的搜索历史中，需要将结果保存在本地，并且有如下要求：
+<br/>①搜索结果倒序展示，即最新的搜索结果展示在最上边
+<br/>②搜索结果不能重复
+<br/>③最多存储10条
+<br/>
+<br/>对于这些要求，可以如下解决
+<br/>
+**①搜索结果倒序展示，即最新的搜索结果展示在最上边**
+<br/>
+对于该条需求，只需在FMDB搜索时，按照主键rowid倒序展示即可
+<br/>
+  待续……
+<br/>
